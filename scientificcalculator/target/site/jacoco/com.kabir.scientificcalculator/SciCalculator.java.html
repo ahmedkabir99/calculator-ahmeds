@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SciCalculator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">scientificcalculator</a> &gt; <a href="index.source.html" class="el_package">com.kabir.scientificcalculator</a> &gt; <span class="el_source">SciCalculator.java</span></div><h1>SciCalculator.java</h1><pre class="source lang-java linenums"><span class="pc" id="L1">package com.kabir.scientificcalculator;</span>
+
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.logging.Logger;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+
+/**
+ * Scientific calculator in Java Swing. 
+ * 
+ * @author Ahmed Kabir
+ */
+public class SciCalculator {
+	
+	private JFrame frame;
+	private JTextField txtDisplay;
+	
+	private double firstNumber;
+	private double secondNumber;
+	private double result;
+	private String operations;
+	private String answer;
+	
+	private CalculatorBasicOperationsInterface basicCalc;
+	private CalculatorAdvancedOperationsInterface advancedCalc;
+	
+<span class="fc" id="L32">	private static final Logger LOGGER = Logger.getLogger(SciCalculator.class.getName());</span>
+
+	public static void main(String[] args) {
+		
+<span class="nc" id="L36">		EventQueue.invokeLater(new Runnable() {</span>
+			public void run(){
+				try {
+<span class="nc" id="L39">					SciCalculator window = new SciCalculator();</span>
+<span class="nc" id="L40">					window.frame.setVisible(true);</span>
+<span class="nc" id="L41">				} catch (Exception e) {</span>
+<span class="nc" id="L42">					LOGGER.severe(&quot;Exception occured!&quot;);</span>
+				}
+<span class="nc" id="L44">			}</span>
+		});
+<span class="nc" id="L46">	}</span>
+	
+<span class="fc" id="L48">	public SciCalculator() {</span>
+		
+<span class="fc" id="L50">		basicCalc = new CalculatorBasicOperations();</span>
+<span class="fc" id="L51">		advancedCalc = new CalculatorAdvancedOperations();</span>
+<span class="fc" id="L52">		createUiComponents();</span>
+<span class="fc" id="L53">	}</span>
+	
+	private void createUiComponents() {
+		
+<span class="fc" id="L57">		frame = createFrame();</span>
+		
+<span class="fc" id="L59">		txtDisplay = createDisplay();</span>
+	
+		// Create buttons for 0 to 9 numbers
+<span class="fc" id="L62">		createNumberButton(&quot;0&quot;, 10, 320, 125, 60);</span>
+<span class="fc" id="L63">		createNumberButton(&quot;1&quot;, 10, 255, 60, 60);</span>
+<span class="fc" id="L64">		createNumberButton(&quot;2&quot;, 75, 255, 60, 60);</span>
+<span class="fc" id="L65">		createNumberButton(&quot;3&quot;, 140, 255, 60, 60);</span>
+<span class="fc" id="L66">		createNumberButton(&quot;4&quot;, 10, 190, 60, 60);</span>
+<span class="fc" id="L67">		createNumberButton(&quot;5&quot;, 75, 190, 60, 60);</span>
+<span class="fc" id="L68">		createNumberButton(&quot;6&quot;, 140, 190, 60, 60);</span>
+<span class="fc" id="L69">		createNumberButton(&quot;7&quot;, 10, 125, 60, 60);</span>
+<span class="fc" id="L70">		createNumberButton(&quot;8&quot;, 75, 125, 60, 60);</span>
+<span class="fc" id="L71">		createNumberButton(&quot;9&quot;, 140, 125, 60, 60);</span>
+		
+		// Create buttons for basic math operations (addition, subtraction, division and multiplication)
+<span class="fc" id="L74">		createOperationButton(&quot;+&quot;, 205, 60, 60, 60);</span>
+<span class="fc" id="L75">		createOperationButton(&quot;-&quot;, 140, 60, 60, 60);</span>
+<span class="fc" id="L76">		createOperationButton(&quot;/&quot;, 205, 125, 60, 60);		</span>
+<span class="fc" id="L77">		createOperationButton(&quot;*&quot;, 205, 190, 60, 60);</span>
+		
+		// Advanced operations
+<span class="fc" id="L80">		createAdvancedOperationButton(&quot;Sin&quot;, 275, 190, 60, 60);		// Button &quot;Sin&quot;</span>
+<span class="fc" id="L81">		createAdvancedOperationButton(&quot;Sinh&quot;, 340, 190, 60, 60);	// Button &quot;Sinh&quot;</span>
+<span class="fc" id="L82">		createAdvancedOperationButton(&quot;Cos&quot;, 275, 255, 60, 60); 	// Button &quot;Cos&quot;</span>
+<span class="fc" id="L83">		createAdvancedOperationButton(&quot;Cosh&quot;, 340, 255, 60, 60); 	// Button &quot;Cosh&quot;</span>
+<span class="fc" id="L84">		createAdvancedOperationButton(&quot;Tan&quot;, 275, 320, 60, 60);		// Button &quot;Tan&quot;</span>
+<span class="fc" id="L85">		createAdvancedOperationButton(&quot;Tanh&quot;, 340, 320, 60, 60); 	// Button &quot;Tanh&quot;</span>
+<span class="fc" id="L86">		createAdvancedOperationButton(&quot;x\u00B2&quot;, 275, 125, 60, 60);	// Button &quot;x^2&quot;</span>
+<span class="fc" id="L87">		createAdvancedOperationButton(&quot;x\u00B3&quot;, 340, 125, 60, 60);	// Button &quot;x^3&quot;</span>
+<span class="fc" id="L88">		createAdvancedOperationButton(&quot;\u03C0&quot;, 275, 60, 60, 60);	// Button &quot;Pi&quot;</span>
+<span class="fc" id="L89">		createAdvancedOperationButton(&quot;\u221A&quot;, 340, 60, 60, 60); 	// Button &quot;Square Root&quot;</span>
+		
+<span class="fc" id="L91">		createBackButton();</span>
+<span class="fc" id="L92">		createClearButton();</span>
+<span class="fc" id="L93">		createDotButton();</span>
+<span class="fc" id="L94">		createEqualsButton();</span>
+<span class="fc" id="L95">	}</span>
+	
+	JFrame createFrame() {
+<span class="fc" id="L98">		JFrame frame = new JFrame();</span>
+<span class="fc" id="L99">		frame.setBounds(100, 100, 425, 430);</span>
+<span class="fc" id="L100">		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);</span>
+<span class="fc" id="L101">		frame.getContentPane().setLayout(null);</span>
+<span class="fc" id="L102">		return frame;</span>
+	}
+	
+	JTextField createDisplay() {
+		// Display
+<span class="fc" id="L107">		JTextField txtDisplay = new JTextField();</span>
+<span class="fc" id="L108">		txtDisplay.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L110">			}</span>
+		});
+<span class="fc" id="L112">		txtDisplay.setBounds(10, 11, 389, 40);</span>
+<span class="fc" id="L113">		frame.getContentPane().add(txtDisplay);</span>
+<span class="fc" id="L114">		txtDisplay.setColumns(10);</span>
+<span class="fc" id="L115">		return txtDisplay;</span>
+	}
+	
+	JButton createNumberButton(String buttonLabel, int posX, int posY, int width, int height) {
+		
+<span class="fc" id="L120">		final JButton button = new JButton(buttonLabel);</span>
+<span class="fc" id="L121">		button.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="fc" id="L123">				String value = txtDisplay.getText() + button.getText(); </span>
+<span class="fc" id="L124">				txtDisplay.setText(value);</span>
+<span class="fc" id="L125">			}</span>
+		});
+<span class="fc" id="L127">		button.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 18));</span>
+<span class="fc" id="L128">		button.setBounds(posX, posY, width, height);</span>
+<span class="fc" id="L129">		frame.getContentPane().add(button);</span>
+		
+<span class="fc" id="L131">		return button;</span>
+	}
+	
+	JButton createOperationButton(String operation, int posX, int posY, int width, int height) {
+		
+<span class="fc" id="L136">		JButton operationButton = new JButton(operation);</span>
+<span class="fc" id="L137">		operationButton.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="fc" id="L139">				firstNumber = Double.parseDouble(txtDisplay.getText());</span>
+<span class="fc" id="L140">				txtDisplay.setText(&quot;&quot;);</span>
+<span class="fc" id="L141">				operations = operation;</span>
+<span class="fc" id="L142">			}</span>
+		});
+<span class="fc" id="L144">		operationButton.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 18));</span>
+<span class="fc" id="L145">		operationButton.setBounds(posX, posY, width, height);</span>
+<span class="fc" id="L146">		frame.getContentPane().add(operationButton);</span>
+		
+<span class="fc" id="L148">		return operationButton;</span>
+	}
+	
+	JButton createEqualsButton() {
+		
+<span class="fc" id="L153">		JButton buttonEnter = new JButton(&quot;=&quot;);</span>
+<span class="fc" id="L154">		buttonEnter.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+				
+<span class="fc" id="L157">				secondNumber = Double.parseDouble(txtDisplay.getText());</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">				if(operations == &quot;+&quot;){</span>
+<span class="fc" id="L159">					result = basicCalc.add(firstNumber, secondNumber); </span>
+<span class="fc" id="L160">					answer = String.format(&quot;%.2f&quot;, result);</span>
+<span class="fc" id="L161">					txtDisplay.setText(answer);</span>
+					
+<span class="fc bfc" id="L163" title="All 2 branches covered.">				} else if(operations == &quot;-&quot;){</span>
+<span class="fc" id="L164">					result = basicCalc.subtract(firstNumber, secondNumber);</span>
+<span class="fc" id="L165">					answer = String.format(&quot;%.2f&quot;, result); </span>
+<span class="fc" id="L166">					txtDisplay.setText(answer);</span>
+					
+<span class="fc bfc" id="L168" title="All 2 branches covered.">				} else if(operations == &quot;*&quot;){</span>
+<span class="fc" id="L169">					result = basicCalc.multiply(firstNumber, secondNumber); </span>
+<span class="fc" id="L170">					answer = String.format(&quot;%.2f&quot;, result); </span>
+<span class="fc" id="L171">					txtDisplay.setText(answer);</span>
+					
+<span class="pc bpc" id="L173" title="1 of 2 branches missed.">				} else if(operations == &quot;/&quot;){</span>
+<span class="fc" id="L174">					result = basicCalc.divide(firstNumber, secondNumber);</span>
+<span class="fc" id="L175">					answer = String.format(&quot;%.2f&quot;, result); </span>
+<span class="fc" id="L176">					txtDisplay.setText(answer);</span>
+				}
+<span class="fc" id="L178">			}</span>
+		});
+<span class="fc" id="L180">		buttonEnter.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 18));  		</span>
+<span class="fc" id="L181">		buttonEnter.setBounds(205, 255, 60, 125);</span>
+<span class="fc" id="L182">		frame.getContentPane().add(buttonEnter);</span>
+		
+<span class="fc" id="L184">		return buttonEnter;</span>
+	}
+	
+	JButton createAdvancedOperationButton(String scientificOperation, int posX, int posY, int width, int height) {
+		
+<span class="fc bfc" id="L189" title="All 4 branches covered.">		if(!&quot;Sin&quot;.equals(scientificOperation) &amp;&amp; !&quot;Sinh&quot;.equals(scientificOperation) </span>
+<span class="fc bfc" id="L190" title="All 4 branches covered.">				&amp;&amp; !&quot;Cos&quot;.equals(scientificOperation) &amp;&amp; !&quot;Cosh&quot;.equals(scientificOperation) </span>
+<span class="fc bfc" id="L191" title="All 4 branches covered.">				&amp;&amp; !&quot;Tan&quot;.equals(scientificOperation) &amp;&amp; !&quot;Tanh&quot;.equals(scientificOperation)</span>
+<span class="fc bfc" id="L192" title="All 4 branches covered.">				&amp;&amp; !&quot;x\u00B2&quot;.equals(scientificOperation) &amp;&amp; !&quot;x\u00B3&quot;.equals(scientificOperation) </span>
+<span class="fc bfc" id="L193" title="All 4 branches covered.">				&amp;&amp; !&quot;\u03C0&quot;.equals(scientificOperation) &amp;&amp; !&quot;\u221A&quot;.equals(scientificOperation)) {</span>
+<span class="fc" id="L194">			throw new IllegalArgumentException(&quot;Operation not allowed!&quot;);</span>
+		}
+		
+<span class="fc" id="L197">		JButton advancedOperationButton = new JButton(scientificOperation);</span>
+<span class="fc" id="L198">		advancedOperationButton.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="fc" id="L200">				double calculatedValue = 0.0d;</span>
+<span class="fc" id="L201">				double input = 0.0d;</span>
+<span class="pc bpc" id="L202" title="13 of 31 branches missed.">				switch(scientificOperation) {</span>
+					case &quot;Sin&quot;:
+<span class="fc" id="L204">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L205">						calculatedValue = advancedCalc.sin(input);</span>
+<span class="fc" id="L206">						break;</span>
+					case &quot;Sinh&quot;:
+<span class="fc" id="L208">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L209">						calculatedValue = advancedCalc.sinh(input);</span>
+<span class="fc" id="L210">						break;</span>
+					case &quot;Cos&quot;:
+<span class="fc" id="L212">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L213">						calculatedValue = advancedCalc.cos(input);</span>
+<span class="fc" id="L214">						break;</span>
+					case &quot;Cosh&quot;:
+<span class="fc" id="L216">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L217">						calculatedValue = advancedCalc.cosh(input);</span>
+<span class="fc" id="L218">						break;</span>
+					case &quot;Tan&quot;:
+<span class="fc" id="L220">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L221">						calculatedValue = advancedCalc.tan(input);</span>
+<span class="fc" id="L222">						break;</span>
+					case &quot;Tanh&quot;:
+<span class="fc" id="L224">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L225">						calculatedValue = advancedCalc.tanh(input);</span>
+<span class="fc" id="L226">						break;</span>
+					case &quot;x\u00B2&quot;: // Square
+<span class="fc" id="L228">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L229">						calculatedValue = advancedCalc.power(input, 2.0);</span>
+<span class="fc" id="L230">						break;</span>
+					case &quot;x\u00B3&quot;: // Power of 3
+<span class="fc" id="L232">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="fc" id="L233">						calculatedValue = advancedCalc.power(input, 3.0);</span>
+<span class="fc" id="L234">						break;</span>
+					case &quot;\u03C0&quot;: // PI
+<span class="fc" id="L236">						calculatedValue = CalculatorAdvancedOperationsInterface.PI;</span>
+<span class="fc" id="L237">						break;</span>
+					case &quot;\u221A&quot;: // Square Root
+<span class="nc" id="L239">						input = Double.parseDouble(String.valueOf(txtDisplay.getText()));</span>
+<span class="nc" id="L240">						calculatedValue = advancedCalc.sqrt(input);</span>
+<span class="nc" id="L241">						break;</span>
+					default:
+						break;
+				}
+<span class="fc" id="L245">				txtDisplay.setText(String.valueOf(calculatedValue));</span>
+<span class="fc" id="L246">			}</span>
+		});
+<span class="fc" id="L248">		advancedOperationButton.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 11));</span>
+<span class="fc" id="L249">		advancedOperationButton.setBounds(posX, posY, width, height);</span>
+<span class="fc" id="L250">		frame.getContentPane().add(advancedOperationButton);</span>
+<span class="fc" id="L251">		return advancedOperationButton;</span>
+	}
+	
+	JButton createDotButton() {
+		
+<span class="fc" id="L256">		final JButton buttonDot = new JButton(&quot;.&quot;);	</span>
+<span class="fc" id="L257">		buttonDot.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L259">				String dot = txtDisplay.getText() + buttonDot.getText(); </span>
+<span class="nc" id="L260">				txtDisplay.setText(dot);</span>
+<span class="nc" id="L261">			}</span>
+		});	
+<span class="fc" id="L263">		buttonDot.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 20));</span>
+<span class="fc" id="L264">		buttonDot.setBounds(140, 320, 60, 60);</span>
+<span class="fc" id="L265">		frame.getContentPane().add(buttonDot);</span>
+		
+<span class="fc" id="L267">		return buttonDot;</span>
+	}
+	
+	JButton createBackButton() {
+		
+		// Button &quot;Backspace&quot; &quot;\uF0E7&quot;
+<span class="fc" id="L273">		JButton buttonBackspace = new JButton(&quot;←&quot;);</span>
+<span class="fc" id="L274">		buttonBackspace.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+				
+<span class="fc" id="L277">				String backspace = null; </span>
+<span class="pc bpc" id="L278" title="1 of 2 branches missed.">				if(txtDisplay.getText().length()&gt;0){</span>
+<span class="fc" id="L279">					StringBuilder stbr = new StringBuilder(txtDisplay.getText());</span>
+<span class="fc" id="L280">					stbr.deleteCharAt(txtDisplay.getText().length()-1);</span>
+<span class="fc" id="L281">					backspace = stbr.toString(); </span>
+<span class="fc" id="L282">					txtDisplay.setText(backspace);</span>
+				}
+<span class="fc" id="L284">			}</span>
+		});
+<span class="fc" id="L286">		buttonBackspace.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 18));</span>
+<span class="fc" id="L287">		buttonBackspace.setBounds(10, 60, 60, 60);</span>
+<span class="fc" id="L288">		frame.getContentPane().add(buttonBackspace);</span>
+<span class="fc" id="L289">		return buttonBackspace;</span>
+	}
+	
+	JButton createClearButton() {
+		// Button &quot;C&quot;
+<span class="fc" id="L294">		JButton buttonClear = new JButton(&quot;C&quot;);</span>
+<span class="fc" id="L295">		buttonClear.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L297">				txtDisplay.setText(null);</span>
+<span class="nc" id="L298">			}</span>
+		});
+<span class="fc" id="L300">		buttonClear.setFont(new Font(&quot;SansSerif&quot;, Font.BOLD, 18));</span>
+<span class="fc" id="L301">		buttonClear.setBounds(75, 60, 60, 60);</span>
+<span class="fc" id="L302">		frame.getContentPane().add(buttonClear);</span>
+<span class="fc" id="L303">		return buttonClear;</span>
+	}
+
+	public JFrame getFrame() {
+<span class="nc" id="L307">		return frame;</span>
+	}
+
+	public JTextField getTxtDisplay() {
+<span class="fc" id="L311">		return txtDisplay;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
